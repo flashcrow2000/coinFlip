@@ -1,0 +1,10 @@
+{
+  "name": "coinFlip",
+  "version": "0.1",
+  "description": "A simple game of coin flip",
+  "homepage": "https://github.com/flashcrow2000/coinFlip",
+  "engines": {
+    "node": ">= 6.4.0",
+    "npm": ">= 3.10.3"
+  }
+}
