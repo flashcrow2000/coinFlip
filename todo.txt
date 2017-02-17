@@ -1,0 +1,18 @@
+# Add a Model for the application. Should hold current status for the game participant.
+# Add a Controller for the application. Should handle communication with the webserver.
+	# The controller will have to register for a queue
+	# The controller will receive a server status when a match has been found.
+	# The controller will ask the server about who will pick first.
+	# The controller will ask for the flip to start, and trigger the appropiate view to appear.
+	# The controller will get the flip result and display the appropiate view.
+	# The controller will handle the option of playing again.
+# Add a View for the application. Should handle the application states.
+	# Add a state for the initial screen. User has the option to 'Flip a coin'.
+	# Add a state for being queued. User has the option to 'Play against AI'.
+	# Add a state for match found. User has a random chance to pick his betting option, otherwise the counterpart will choose.
+	# Add a state for coin flipping. Will last 1 second.
+	# Add a state for flipping results. User has the option of 'Flip another coin'
+# The server will create sockets for each incoming connection, and whenever there are more than 2 sockets, it will pop 2 out of the list, and connect them, creating a match.
+# Whenever a match has been created, the server needs to decide which one of the two oponnents will choose heads or tails. 
+# The server will send back to each participant what their bet is.
+# The server calculates the flip and sends the response back to every participant.
