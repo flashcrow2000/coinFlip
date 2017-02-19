@@ -1,10 +1,32 @@
 <html>
-<body>
-<p> Hello world! </p>
+<body onLoad="onLoaded()">
+<div id="text"> Hello world! </div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
   var socket = io();
+  var paired = '';
+  
+  socket.on('paired', function(msg) {
+  	var el = document.getElementById('text');
+  	el.innerHTML = el.innerHTML+'<br>'+'current socket:'+socket.id+' paired with '+msg;
+  	paired = msg;
+  });
+
+  socket.on('clicked', function(msg) {
+  	var el = document.getElementById('text');
+  	el.innerHTML = el.innerHTML+'<br>'+'paired clicked';
+  })
+  
+  function onLoaded(){
+  	var el = document.getElementById('text');
+  	el.addEventListener('click', this.onDivClicked);
+  }
+
+  function onDivClicked(e) {
+  	console.log('emit '+paired);
+  	socket.emit('action', paired);
+  }
 </script>
 </body>
 </html>

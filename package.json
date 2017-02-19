@@ -12,7 +12,7 @@
     "url": "https://github.com/flashcrow2000/coinFlip.git"
   },
   "scripts": {
-    "start": "node ./server/server.js"
+    "start": "nodemon ./server/server.js"
   },
   "dependencies": {
     "express": "^4.14.1",
