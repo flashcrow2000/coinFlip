@@ -1,32 +1,98 @@
 <html>
 <body onLoad="onLoaded()">
-<div id="text"> Hello world! </div>
+  <div id="text"> Hello world! </div>
+  <div id="choiceFirst" style="width:350px; height: 15px; background:blue; position: absolute; top: 80px; left: 15px; display: none"> 
+    <div id="heads" style="text-align:center; position:absolute; top: 0px; left: 20px; width:120px; background:yellow; opacity: 0.8;">Heads</div>
+    <div id="tails" style="text-align:center; position:absolute; top: 0px; left: 150px; width:120px; background:pink; opacity: 0.8;">Tails</div>
+  </div>
+  <div id="choiceSecond" style="width:350px; height: 15px; background:blue; position: absolute; top: 80px; left: 15px; display: none"> Wait for your oponnent to choose... </div>
+  <div id="waitFlip" style="width:350px; height: 15px; background:green; position: absolute; top: 80px; left: 15px; display: none"> Waiting for the flip </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io(),
+        paired = '',
+        choice;
+    
+    socket.on('paired', function(msg) {
+    	var el = document.getElementById('text');
+      console.log(msg);
+    	showMessage(msg.position)
+    	paired = msg.pair;
 
-<script src="/socket.io/socket.io.js"></script>
-<script>
-  var socket = io();
-  var paired = '';
-  
-  socket.on('paired', function(msg) {
-  	var el = document.getElementById('text');
-  	el.innerHTML = el.innerHTML+'<br>'+'current socket:'+socket.id+' paired with '+msg;
-  	paired = msg;
-  });
+    }.bind(this));
 
-  socket.on('clicked', function(msg) {
-  	var el = document.getElementById('text');
-  	el.innerHTML = el.innerHTML+'<br>'+'paired clicked';
-  })
-  
-  function onLoaded(){
-  	var el = document.getElementById('text');
-  	el.addEventListener('click', this.onDivClicked);
-  }
+    socket.on('clicked', function(msg) {
+    	var el = document.getElementById('text');
+    	el.innerHTML = el.innerHTML+'<br>'+'paired clicked';
+    });
 
-  function onDivClicked(e) {
-  	console.log('emit '+paired);
-  	socket.emit('action', paired);
-  }
-</script>
+    socket.on('gameResult', function(msg) {
+      gameResults(msg);
+    });
+
+
+
+    socket.on('choiceMade', function(msg) {
+      console.log(msg);
+      startGame(msg);
+    });
+    
+    function gameResults(msg) {
+      console.log('result from server', msg);
+      var el = document.getElementById('waitFlip');
+      el.style.display = 'block';
+      el.innerHTML += '<br> Result is '+msg.flip;
+    }
+
+    function startGame(msg) {
+      hideChoices();
+      var el = document.getElementById('waitFlip');
+      el.style.display = 'block';
+      el.innerHTML = 'Choice is '+msg.choice;
+    };
+
+    function showMessage(position) {
+      if (position === 'first') {
+        document.getElementById('choiceFirst').style.display = 'block';
+      } else {
+        document.getElementById('choiceSecond').style.display = 'block';
+      }
+    };
+
+    function onHeadsClicked() {
+      sendChoiceToServer('heads');
+    };
+
+    function onTailsClicked() {
+      sendChoiceToServer('tails');
+    };
+
+    function sendChoiceToServer(pos) {
+      var msg = {};
+      msg.pair = paired;
+      msg.this = socket.id;
+      msg.position = pos;
+      socket.emit('choiceMade', msg);
+    };
+
+    function hideChoices() {
+      var ch1 = document.getElementById('choiceFirst');
+      var ch2 = document.getElementById('choiceSecond');
+      ch1.style.display = 'none';
+      ch2.style.display = 'none';
+    }
+
+    function onLoaded(){
+      var heads = document.getElementById('heads');
+      heads.addEventListener('click', onHeadsClicked);
+      var tails = document.getElementById('tails');
+      tails.addEventListener('click', onTailsClicked);
+    };
+
+    function onDivClicked(e) {
+    	console.log('emit '+paired);
+    	socket.emit('action', paired);
+    };
+  </script>
 </body>
 </html>

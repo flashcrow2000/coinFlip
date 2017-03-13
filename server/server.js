@@ -27,7 +27,8 @@ io.on('connection', function(socket){
 		console.log('action received from participant:'+msg);
 		console.log(typeof pairedSockets[msg]);
 		pairedSockets[msg].emit('clicked', '');
-	})
+	});
+	socket.on('choiceMade', onChoiceMade);
 	// TODO we should freeze these arrays at this point, so that no deletion happens between saves
 	sockets.push(socket);
 	sockIds.push(socket.id);
@@ -62,12 +63,34 @@ io.on('connection', function(socket){
 	}
 })
 
+function onChoiceMade(msg) {
+	console.log('choiceMade ', msg);
+	var sock1 = pairedSockets[msg.this],
+		sock2 = pairedSockets[msg.pair],
+		otherChoice = (msg.position === 'heads')?'tails':'heads'
+	sock1.emit('choiceMade', {choice:msg.position});
+	sock2.emit('choiceMade', {choice:otherChoice});
+	setTimeout(function() {
+		var result = (parseInt(Math.random() * 1000) %2) ? 'heads' : 'tails';
+		sock1.emit('gameResult', {flip:result});
+		sock2.emit('gameResult', {flip:result});
+	}, 1000);
+}
+
 function handlePair(pair) {
 	console.log(pair.first.id, pair.second.id);
-	pair.first.emit('paired', pair.second.id);
-	pair.second.emit('paired', pair.first.id);
+	var msg0='first', msg1='second',
+		rand = (parseInt(Math.random() * 1000) %2);
+	if (rand) {
+		msg1 = 'first';
+		msg0 = 'second';
+	}
+
+	pair.first.emit('paired', {pair:pair.second.id, position: msg0});
+	pair.second.emit('paired', {pair:pair.first.id, position: msg1});
+	
 }
 
 http.listen(port, function() {
-	console.log('server listening on port '+port);
+	console.log('server listening on port ' + port);
 });
