@@ -12,11 +12,22 @@
     "url": "https://github.com/flashcrow2000/coinFlip.git"
   },
   "scripts": {
-    "start": "nodemon ./server/server.js"
+    "start": "nodemon ./server/server.js",
+    "start:dev": "nodemon ./server/server.node.js --exec babel-node"
   },
   "dependencies": {
     "express": "^4.14.1",
     "path": "^0.12.7",
     "socket.io": "^1.7.3"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-core": "^6.24.0",
+    "babel-plugin-transform-regenerator": "^6.22.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-stage-0": "^6.22.0",
+    "babel-runtime": "^6.23.0"
   }
 }
