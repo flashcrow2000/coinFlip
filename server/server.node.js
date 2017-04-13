@@ -4,22 +4,22 @@
  *
  * Distributed under terms of the MIT license.
  */
-/*jshint esnext: true*/
+/*jshint esnext: true, strict: false*/
 import express from 'express';
 import http from 'http';
 import socket from 'socket.io';
-import path from 'path';
+// import path from 'path';
 
 let app = express();
 let server = http.Server(app);
 let io = socket(server);
 let port = 3000;
 
-app.get('/', function(req, res){
+app.get('/', function (req, res) {
   res.sendfile('public/index.html');
 });
 
-server.listen(port, function() {
+server.listen(port, function () {
   console.log('server listening on port ' + port);
 });
 
